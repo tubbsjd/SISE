@@ -15,17 +15,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-#Introduction to the **SISE** package
+# Introduction to the **SISE** package
 
-##Smoothed Interval-based Survival Estimation
+## Smoothed Interval-based Survival Estimation
 
-The **SISE** package is used to estimate smoothed survival (and time-to-event) distributions from interval-censored data, building on the traditional Turnbull (1976) estimator. In a similar manner, our method may also be used when observations are exact or right-censored using a modification of the Kaplan-Meier (1958) procedure.
-
-You can install the **SISE** package with the following code.
-
-```{r}
-install_github('tubbsjd/SISE')
-```
+The **SISE** package is used to estimate smoothed survival (and time-to-event) distributions from interval-censored data, building on the traditional Turnbull (1976) estimator. In a similar manner, our method can also be used when observations are exact or right-censored using a modification of the Kaplan-Meier (1958) procedure.
 
 This vignette utilizes a dataset on breast cosmesis (Finkelstein & Wolfe,1985) loaded from the `interval` R package.
 
@@ -51,8 +45,16 @@ Now we can provide this data frame to the `smoothTB()` function. Although it is 
 To estimate survival curves for the two different treatment groups, we run the function on the two groups independently.
 
 ```{r}
-results1 <- smoothTB(dat = dat[bcos$treatment == "Rad",], n.obs = 5, left.bound = 0, penalty=c('logNe'), n.dec = 0)
-results2 <- smoothTB(dat = dat[bcos$treatment == "RadChem",], n.obs = 5, left.bound = 0, penalty=c('logNe'), n.dec = 0)
+results1 <- smoothTB(dat = dat[bcos$treatment == "Rad",], 
+                     n.obs = 5, 
+                     left.bound = 0, 
+                     penalty=c('logNe'), 
+                     n.dec = 0)
+results2 <- smoothTB(dat = dat[bcos$treatment == "RadChem",],
+                     n.obs = 5, 
+                     left.bound = 0, 
+                     penalty=c('logNe'), 
+                     n.dec = 0)
 str(results)
 ```
 
@@ -64,7 +66,8 @@ Thus, we can plot the survival curve estimated by our method and compare it to t
 library(ggplot2)
 
 plt.df <- data.frame(Time = c(results1$time.s, results2$time.s),
-                     Survival = c(results1$TB.s.smooth.logNe, results2$TB.s.smooth.logNe),
+                     Survival = c(results1$TB.s.smooth.logNe,
+                                  results2$TB.s.smooth.logNe),
                      Treatment = factor(c(rep("Rad", length(results1$TB.s.smooth.logNe)),
                                           rep("RadChem", length(results2$TB.s.smooth.logNe)))))
 
