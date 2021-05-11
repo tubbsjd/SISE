@@ -76,4 +76,4 @@ p2 <- ggplot(plt.df.tb, aes(x = Time, y = Survival, color = Treatment)) +
 gridExtra::grid.arrange(p1,p2, nrow = 1)
 ```
 
-<img src="man/figures/README-example-1.png" width="100%" />
+<img src="man/figures/README-example-1.svg" width="100%" />

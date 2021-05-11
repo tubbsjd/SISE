@@ -332,11 +332,14 @@ smoothKM <- function(dat,
 #' and interval-censored observations), "I" (interval-censored observations), "LIR" (left-, interval-, and right-
 #' censored observations). Default is "I". Note that depending on the underlying event mechanism, it may be
 #' inappropriate to attempt imputation for left- or right-censored subjects.
-#'
 #' @param n.dec The number of decimal places in the observed data.
 #'
 #' @export
-predict.onset <- function(dat, event.distribution, time, type = "I", n.dec = 2) {
+impute.time <- function(dat, 
+                          event.distribution, 
+                          time, 
+                          type = "I", 
+                          n.dec = 2) {
   
   out.pred <- vector()
   
