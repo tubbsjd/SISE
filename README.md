@@ -63,7 +63,9 @@ plt.df <- data.frame(Time = c(results1$time.s, results2$time.s),
                                           rep("RadChem", length(results2$TB.s.smooth.logNe)))))
 
 p1 <- ggplot(plt.df, aes(x = Time, y = Survival, color = Treatment)) +
-  geom_step() + theme_bw() + labs(title = " Smoothed Turnbull Estimate", x = "Time (months)") + theme(legend.position = "bottom")
+  geom_step() + theme_bw() + 
+  labs(title = " Smoothed Turnbull Estimate", x = "Time (months)") +
+  theme(legend.position = "bottom")
 
 plt.df.tb <- data.frame(Time = c(results1$time.s, results2$time.s),
                      Survival = c(results1$TB.s, results2$TB.s),
@@ -71,7 +73,9 @@ plt.df.tb <- data.frame(Time = c(results1$time.s, results2$time.s),
                                           rep("RadChem", length(results2$TB.s)))))
 
 p2 <- ggplot(plt.df.tb, aes(x = Time, y = Survival, color = Treatment)) +
-  geom_step() + theme_bw() + labs(title = "Turnbull Estimate", x = "Time (months)") + theme(legend.position = "bottom")
+  geom_step() + theme_bw() + 
+  labs(title = "Turnbull Estimate", x = "Time (months)") + 
+  theme(legend.position = "bottom")
 
 gridExtra::grid.arrange(p1,p2, nrow = 1)
 ```
