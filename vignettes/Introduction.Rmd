@@ -1,0 +1,110 @@
+---
+title: "Introduction to the SISE Package"
+author: "Stephen D. Turner"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+#Introduction to the **SISE** package
+
+##Smoothed Interval-based Survival Estimation
+
+The **SISE** package is used to estimate smoothed survival (and time-to-event) distributions from interval-censored data, building on the traditional Turnbull (1976) estimator. In a similar manner, our method may also be used when observations are exact or right-censored using a modification of the Kaplan-Meier (1958) procedure.
+
+You can install the **SISE** package with the following code.
+
+```{r}
+install_github('tubbsjd/SISE')
+```
+
+This vignette utilizes a dataset on breast cosmesis (Finkelstein & Wolfe,1985) loaded from the `interval` R package.
+
+```{r}
+library(SISE)
+
+data(bcos, package = "interval")
+```
+
+
+The main function from the **SISE** package is the `smoothTB()` function. It takes a data frame or matrix of interval-censored observations as input, where columns 1 and 2 are the left and right interval bounds observed for each subject. For left-censored observations, their value in column 1 should be `NA`. Likewise, right-censored observations should have `NA` in column 2.
+
+Here we will re-format the breast cosmesis data so that it can be passed to the `smoothTB()` function.
+
+```{r}
+dat <- bcos[,1:2]
+dat$left[dat$left == 0] <- NA
+dat$right[is.infinite(dat$right)] <- NA
+```
+
+Now we can provide this data frame to the `smoothTB()` function. Although it is not known from the dataset description, we assume here that the average number of observations per subject, `n.obs` is 5. We assume the left boundary, `left.bound` of event times is 0. We will use the `logNe` penalty for choosing a bandwidth. Further, we need to specify the number of decimal points of the observed data. We leave the `tolerance` and `inflection.threshold` at their default values.
+
+To estimate survival curves for the two different treatment groups, we run the function on the two groups independently.
+
+```{r}
+results1 <- smoothTB(dat = dat[bcos$treatment == "Rad",], n.obs = 5, left.bound = 0, penalty=c('logNe'), n.dec = 0)
+results2 <- smoothTB(dat = dat[bcos$treatment == "RadChem",], n.obs = 5, left.bound = 0, penalty=c('logNe'), n.dec = 0)
+str(results)
+```
+
+The output of the `smoothTB()` function is a list object holding intermediate variables used in the analysis, some characteristics of the sample, and importantly, the estimated smooth survival and onset distributions, called `TB.s.smooth.xxx` and `TB.o.smooth.xxx` respectively, where *xxx* is the sBIC penalty parameter used when choosing the smoothing bandwidth.
+
+Thus, we can plot the survival curve estimated by our method and compare it to that estimated using the classic Turnbull algorithm.
+
+```{r}
+library(ggplot2)
+
+plt.df <- data.frame(Time = c(results1$time.s, results2$time.s),
+                     Survival = c(results1$TB.s.smooth.logNe, results2$TB.s.smooth.logNe),
+                     Treatment = factor(c(rep("Rad", length(results1$TB.s.smooth.logNe)),
+                                          rep("RadChem", length(results2$TB.s.smooth.logNe)))))
+
+p1 <- ggplot(plt.df, aes(x = Time, y = Survival, color = Treatment)) +
+  geom_step() + theme_bw() + labs(title = " Smoothed Turnbull Estimate", x = "Time (months)")
+
+plt.df.tb <- data.frame(Time = c(results1$time.s, results2$time.s),
+                     Survival = c(results1$TB.s, results2$TB.s),
+                     Treatment = factor(c(rep("Rad", length(results1$TB.s)),
+                                          rep("RadChem", length(results2$TB.s)))))
+
+p2 <- ggplot(plt.df.tb, aes(x = Time, y = Survival, color = Treatment)) +
+  geom_step() + theme_bw() + labs(title = "Turnbull Estimate", x = "Time (months)")
+
+gridExtra::grid.arrange(p1,p2)
+
+```
+
+
+The **SISE** package also provides a helpful function, `predict.onset()`, for imputing censored observations given an assumed onset distribution estimate. To demonstrate, we predict onsets of left- and interval-censored individuals in the two groups, given the estimated smoothed onset curves. 
+
+
+```{r}
+pred1 <- predict.onset(dat = results1$dat, 
+                       event.distribution = results1$TB.o.smooth.logNe, 
+                       time = results1$time.o, 
+                       type = "LI", n.dec = 0)
+pred2 <- predict.onset(dat = results2$dat, 
+                       event.distribution = results2$TB.o.smooth.logNe, 
+                       time = results2$time.o, 
+                       type = "LI", n.dec = 0)
+
+plt.pred <- data.frame(onset = c(pred1, pred2),
+                       Treatment = c(rep("Rad", length(pred1)),
+                                     rep("RadChem", length(pred2))))
+
+ggplot(plt.pred, aes(x = Treatment, y = onset, fill = Treatment)) +
+  geom_violin() +
+  geom_boxplot(fill = "white", alpha = 0.7) +
+  theme_bw() + labs(title = "Predicted Onset Time Across Treatment Groups",
+                    y = "Time to Onset (months)")
+
+```

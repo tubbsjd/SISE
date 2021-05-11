@@ -1,0 +1,27 @@
+Package: SISE
+Title: Smoothed Interval-based Survival Estimation
+Version: 0.0.0.1
+Authors@R: 
+    person(given = "Justin D.",
+           family = "Tubbs",
+           role = c("aut", "cre"),
+           email = "tubbsjd@gmail.com",
+           comment = c(ORCID = "0000-0002-6671-6816"))
+Description: This package is used to estimate smooth survival curves (and time-to-event curves) using a penalized log-likelihood function (sBIC) to determine an optimal smoothing bandwidth as described in our manuscript. When data are interval-censored, we employ the method of Turnbull (1976). When observations are exact, we follow the method of Kaplan & Meier (1958).
+License: `use_mit_license()`
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports:
+	zoo,
+	tidyverse,
+	survival,
+	Icens,
+	interval,
+	caTools,
+	nloptr
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr
