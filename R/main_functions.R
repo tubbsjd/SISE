@@ -17,7 +17,7 @@
 #' @param n.obs The number of observations per subject. Used for calculation of effective N. Defaults to 2.
 #' @param left.bound The earliest possible time which an event can occur. Defaults to 0.
 #' @param penalty The penalty/penalties to use when calculating the sBIC. Possible values are "logNe",
-#' "logNm", or "logN".
+#' "logNm", or "logN". Default is "logNe".
 #' @param n.dec The number of decimal places in the observed data.
 #' @param tolerance The tolerance for change in bandwidth when performing local optimization of the sBIC.
 #' @param inflection.threshold Threshold used when counting the number of turning points in the time
@@ -27,7 +27,7 @@
 smoothTB <- function(dat,
                      n.obs = 2,
                      left.bound = 0,
-                     penalty = c("logN","logNm","logNe"),
+                     penalty = "logNe",
                      n.dec = 2,
                      tolerance = NA,
                      inflection.threshold = 1e-2) {
@@ -176,7 +176,7 @@ smoothTB <- function(dat,
 #' @param n.obs The number of observations per subject. Used for calculation of effective N. Defaults to 2.
 #' @param left.bound The earliest possible time which an event can occur. Defaults to 0.
 #' @param penalty The penalty/penalties to use when calculating the sBIC. Possible values are "logNe",
-#' "logNm", or "logN".
+#' "logNm", or "logN". Default is "logNe".
 #' @param n.dec The number of decimal places in the observed data.
 #' @param tolerance The tolerance for change in bandwidth when performing local optimization of the sBIC.
 #' @param inflection.threshold Threshold used when counting the number of turning points in the time
@@ -186,7 +186,7 @@ smoothTB <- function(dat,
 smoothKM <- function(dat,
                      n.obs = 2,
                      left.bound = 0,
-                     penalty = c("logN","logNm","logNe"),
+                     penalty = "logNe",
                      n.dec = 2,
                      tolerance = NA,
                      inflection.threshold = 1e-2) {

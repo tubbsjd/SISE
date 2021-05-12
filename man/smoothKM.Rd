@@ -8,7 +8,7 @@ smoothKM(
   dat,
   n.obs = 2,
   left.bound = 0,
-  penalty = c("logN", "logNm", "logNe"),
+  penalty = "logNe",
   n.dec = 2,
   tolerance = NA,
   inflection.threshold = 0.01
@@ -22,7 +22,7 @@ smoothKM(
 \item{left.bound}{The earliest possible time which an event can occur. Defaults to 0.}
 
 \item{penalty}{The penalty/penalties to use when calculating the sBIC. Possible values are "logNe",
-"logNm", or "logN".}
+"logNm", or "logN". Default is "logNe".}
 
 \item{n.dec}{The number of decimal places in the observed data.}
 
