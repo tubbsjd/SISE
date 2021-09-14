@@ -75,7 +75,7 @@ smoothTB <- function(dat,
     }
   }
   
-  Ne <- sum(Ne.vec)
+  Ne <- sum(Ne.vec, na.rm = T)
   
   #set optimizer parameters
   if(is.na(tolerance)){tolerance = time.int}
